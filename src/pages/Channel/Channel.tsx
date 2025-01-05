@@ -1,0 +1,167 @@
+import React, { useState } from "react";
+import { useLoaderApi } from "../../utils/router";
+import { Channel as ChannelModel, ContentType } from "../../models/channel";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  Form,
+  Input,
+  Switch,
+  Select,
+  Button,
+  Typography,
+  Flex,
+} from "antd";
+import { useUpdateChannelMutation } from "../../store/channels/api";
+import styles from "./Channel.module.css";
+
+const { Title, Text } = Typography;
+const { Option } = Select;
+
+const Channel = () => {
+  const { data: channel, isLoading, isError } = useLoaderApi<ChannelModel>();
+  const navigate = useNavigate();
+  const [updateChannel] = useUpdateChannelMutation();
+  const [isEditing, setIsEditing] = useState(false);
+  const [form] = Form.useForm();
+
+  const handleEdit = (type: ContentType) => {
+    navigate(`/channels/content-edit/${channel?.username}/${type}`);
+  };
+
+  const handleSubmit = (values: any) => {
+    updateChannel({
+      channelInfo: {
+        hasDraft: values.hasDraft,
+        postingSettings: {
+          ...channel!.postingSettings,
+          type: values.type,
+          loadImage: values.loadImage,
+          times: values.postingTimes,
+        },
+        graberSettings: {
+          ...channel!.graberSettings,
+          times: values.graberTimes,
+        },
+      },
+      channelId: channel!.username,
+    });
+    setIsEditing(false);
+  };
+
+  const renderViewMode = () => (
+    <>
+      <Title level={4}>Channel Information</Title>
+      <Text strong>Username:</Text> <Text>{channel!.username}</Text>
+      <br />
+      <Text strong>Has Draft:</Text>{" "}
+      <Text>{channel!.hasDraft ? "Yes" : "No"}</Text>
+      <br />
+      <Text strong>Posting Type:</Text>{" "}
+      <Text>{channel!.postingSettings.type}</Text>
+      <br />
+      <Text strong>Load Image:</Text>{" "}
+      <Text>{channel!.postingSettings.loadImage.toString()}</Text>
+      <br />
+      <Text strong>Posting Times:</Text>{" "}
+      <Text>{channel!.postingSettings.times.join(", ")}</Text>
+      <br />
+      <Text strong>Graber Times:</Text>{" "}
+      <Text>{channel!.graberSettings.times}</Text>
+    </>
+  );
+
+  const renderEditMode = () => (
+    <Form
+      form={form}
+      onFinish={handleSubmit}
+      initialValues={{
+        hasDraft: channel!.hasDraft,
+        type: channel!.postingSettings.type,
+        loadImage: channel!.postingSettings.loadImage,
+        postingTimes: channel!.postingSettings.times,
+        graberTimes: channel!.graberSettings.times,
+      }}
+    >
+      <Form.Item name="hasDraft" label="Has Draft" valuePropName="checked">
+        <Switch />
+      </Form.Item>
+      <Form.Item name="type" label="Posting Type">
+        <Select>
+          <Option value="link">Link</Option>
+          <Option value="video">Video</Option>
+        </Select>
+      </Form.Item>
+      <Form.Item name="loadImage" label="Load Image">
+        <Select>
+          <Option value={true}>True</Option>
+          <Option value={false}>False</Option>
+          <Option value="random">Random</Option>
+        </Select>
+      </Form.Item>
+      <Form.Item name="postingTimes" label="Posting Times">
+        <Input />
+      </Form.Item>
+      <Form.Item name="graberTimes" label="Graber Times">
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
+    </Form>
+  );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !channel) {
+    return <div>Error...</div>;
+  }
+
+  return (
+    <Card
+      title="Channel Info"
+      extra={
+        <Switch
+          checked={isEditing}
+          onChange={(checked) => setIsEditing(checked)}
+          checkedChildren="Edit"
+          unCheckedChildren="View"
+        />
+      }
+    >
+      {isEditing ? renderEditMode() : renderViewMode()}
+      <Title level={4}>Edit Content</Title>
+      <Flex gap={12}>
+        <Card
+          bordered
+          className={styles.contentEditPlate}
+          onClick={() => handleEdit("main")}
+        >
+          Main content
+        </Card>
+        {channel?.hasDraft && (
+          <Card
+            bordered
+            className={styles.contentEditPlate}
+            onClick={() => handleEdit("draft")}
+          >
+            Draft content
+          </Card>
+        )}
+        <Card
+          bordered
+          className={styles.contentEditPlate}
+          onClick={() => handleEdit("result")}
+        >
+          Result content
+        </Card>
+      </Flex>
+    </Card>
+  );
+};
+
+export default Channel;

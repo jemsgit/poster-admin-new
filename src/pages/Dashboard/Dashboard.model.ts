@@ -1,0 +1,52 @@
+import { store } from "../../store/store";
+
+import { botsApi } from "../../store/bots/bots";
+import { channelsApi } from "../../store/channels/api";
+import { grabbersApi } from "../../store/grabbers/api";
+import { DashboardData } from "./types";
+import { RouterLoader } from "../../routes/routes.types";
+// import { defer } from "react-router-dom";
+
+const loader = async (): Promise<RouterLoader<DashboardData>> => {
+  const botsQuery = store.dispatch(botsApi.endpoints.bots.initiate());
+  const channelsQuery = store.dispatch(
+    channelsApi.endpoints.channels.initiate()
+  );
+  const grabbersQuery = store.dispatch(
+    grabbersApi.endpoints.grabbers.initiate()
+  );
+
+  const data = Promise.all([botsQuery, channelsQuery, grabbersQuery]).then(
+    (res) => {
+      let bots = res[0].data;
+      let channels = res[1].data;
+      let grabbers = res[2].data;
+      return {
+        bots,
+        channels,
+        grabbers,
+      };
+    }
+  );
+
+  return {
+    data: data,
+  };
+};
+
+const handle = {
+  breadcrumbs: [
+    {
+      title: "Main",
+      url: "/",
+    },
+    {
+      title: "Dashboard",
+    },
+  ],
+};
+
+export default {
+  loader,
+  handle,
+};

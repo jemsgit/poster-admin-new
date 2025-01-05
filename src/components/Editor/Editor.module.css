@@ -1,0 +1,41 @@
+.editorTextarea {
+  width: 100%;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.editorContent {
+  height: 300px;
+  overflow: auto;
+  counter-reset: line-number;
+  margin-bottom: 1em;
+  border: 1px #006500 solid;
+  border-radius: 3px;
+
+  div {
+    background: #8fff7c38;
+    padding: 4px;
+    font-size: 1.05em;
+    counter-increment: line-number;
+    color: var(--color-main-on-white-font);
+
+    &:before {
+      content: counter(line-number) " ";
+    }
+
+    &:nth-child(even) {
+      background: #3fa52e38;
+    }
+  }
+}
+
+.editorSaveButton {
+  width: 200px;
+  padding: 10px;
+  cursor: pointer;
+  background: black;
+  border-radius: 5px;
+  color: #00ff50;
+  font-size: 1.3em;
+  font-family: monospace;
+}
