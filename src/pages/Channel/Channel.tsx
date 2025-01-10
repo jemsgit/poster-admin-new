@@ -30,28 +30,29 @@ const Channel = () => {
   };
 
   const handleSubmit = (values: any) => {
-    updateChannel({
-      channelInfo: {
-        hasDraft: values.hasDraft,
-        postingSettings: {
-          ...channel!.postingSettings,
-          type: values.type,
-          loadImage: values.loadImage,
-          times: values.postingTimes,
+    if (channel) {
+      updateChannel({
+        channelInfo: {
+          hasDraft: values.hasDraft,
+          postingSettings: {
+            ...channel.postingSettings,
+            type: values.type,
+            loadImage: values.loadImage,
+            times: values.postingTimes,
+          },
+          graberSettings: {
+            ...channel.graberSettings,
+            times: values.graberTimes,
+          },
         },
-        graberSettings: {
-          ...channel!.graberSettings,
-          times: values.graberTimes,
-        },
-      },
-      channelId: channel!.username,
-    });
+        channelId: channel.username,
+      });
+    }
     setIsEditing(false);
   };
 
   const renderViewMode = () => (
     <>
-      <Title level={4}>Channel Information</Title>
       <Text strong>Username:</Text> <Text>{channel!.username}</Text>
       <br />
       <Text strong>Has Draft:</Text>{" "}
@@ -117,13 +118,13 @@ const Channel = () => {
     return <div>Loading...</div>;
   }
 
-  if (isError || !channel) {
+  if (isError) {
     return <div>Error...</div>;
   }
 
   return (
     <Card
-      title="Channel Info"
+      title={`Channel Info: ${channel.username}`}
       extra={
         <Switch
           checked={isEditing}
@@ -143,7 +144,7 @@ const Channel = () => {
         >
           Main content
         </Card>
-        {channel?.hasDraft && (
+        {channel.hasDraft && (
           <Card
             bordered
             className={styles.contentEditPlate}

@@ -6,9 +6,9 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Layout from "../components/Layout/Layout";
 import dashboardLoader from "../pages/Dashboard/Dashboard.model";
 import channelLoader from "../pages/Channel/Channel.model";
-import { Suspense } from "react";
 import Channel from "../pages/Channel/Channel";
 import ContentEditor from "../pages/ContentEditor/ContentEditor";
+import contentEditLoader from "../pages/ContentEditor/ContentEditor.model";
 
 const getRoutes = () => {
   return createBrowserRouter([
@@ -35,16 +35,18 @@ const getRoutes = () => {
                   path: ":name",
                   element: <Channel />,
                   loader: channelLoader.loader,
+                  handle: channelLoader.handle,
                 },
                 {
                   path: "content-edit/:name/:type",
                   element: <ContentEditor />,
-                  loader: channelLoader.loader,
+                  loader: contentEditLoader.loader,
+                  handle: contentEditLoader.handle,
                 },
               ],
             },
             {
-              path: "bots", // Accessible at "/channels"
+              path: "bots", // Accessible at "/bots"
               children: [
                 {
                   index: true,

@@ -8,13 +8,39 @@ import DasboardListItem from "../../components/DasboardListItem/DasboardListItem
 import InlineList from "../../components/InlineList/InlineList";
 import { Bot } from "../../models/bot";
 import { Channel } from "../../models/channel";
+import { Grabber } from "../../models/grabber";
 
 const { Title } = Typography;
 
-interface Props {}
+const mapChannelToContent = (channel: Channel): string => {
+  const {
+    hasDraft,
+    postingSettings: { times, type },
+    graberSettings: { times: grabberTimes, modulePath },
+  } = channel;
+  return `Has draft: ${hasDraft ? "Yes" : "No"}
 
-function Dashboard(props: Props) {
-  const {} = props;
+Posting:
+Time: ${times},
+Type: ${type}
+
+Grabber:
+Time: ${grabberTimes},
+Module: ${modulePath}`;
+};
+
+const mapBotsToContent = (bot: Bot): string => {
+  const { username } = bot;
+  return `${username}`;
+};
+
+const mapGrabbersToContent = (grabber: Grabber): string => {
+  const { channel, filesList } = grabber;
+  return `Channel: ${channel}
+Files: ${filesList.length}`;
+};
+
+function Dashboard() {
   const { data, isError, isLoading } = useLoaderApi<DashboardData>();
   const navigate = useNavigate();
 
@@ -46,11 +72,11 @@ function Dashboard(props: Props) {
         Channels
       </Title>
       <InlineList>
-        {data?.channels?.map((channel: Channel) => (
+        {data.channels?.map((channel: Channel) => (
           <DasboardListItem
             title={channel.username}
             key={channel.username}
-            content={JSON.stringify(channel)}
+            content={mapChannelToContent(channel)}
             onClick={() => handleChannelClick(channel.username)}
           />
         ))}
@@ -62,9 +88,9 @@ function Dashboard(props: Props) {
       <InlineList>
         {data?.bots?.map((bot: Bot) => (
           <DasboardListItem
-            title={bot.name}
-            key={bot.name}
-            content={JSON.stringify(bot)}
+            title={bot.username}
+            key={bot.username}
+            content={mapBotsToContent(bot)}
             onClick={() => handleBotClick(bot.name)}
           />
         ))}
@@ -78,7 +104,7 @@ function Dashboard(props: Props) {
           <DasboardListItem
             title={grabber.name}
             key={grabber.name}
-            content={JSON.stringify(grabber)}
+            content={mapGrabbersToContent(grabber)}
             onClick={() => handleGrabberClick(grabber.name)}
           />
         ))}

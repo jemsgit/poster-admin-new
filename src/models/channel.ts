@@ -18,3 +18,9 @@ export interface Channel {
     loadImage: LoadImageConfig;
   };
 }
+
+export interface ContentCopyTarget {
+  key: string;
+  label: string;
+  children: { key: string; label: string }[];
+}

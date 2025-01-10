@@ -10,6 +10,7 @@ export const channelsApi = api.injectEndpoints({
           url: endpoints.channels.get,
         };
       },
+      providesTags: ["Channels"],
     }),
     channelById: builder.query<Channel, string>({
       query: (channelName) => {
@@ -38,10 +39,22 @@ export const channelsApi = api.injectEndpoints({
         body,
       }),
     }),
-    getContent: builder.query<any, { channelId: string; type: string }>({
+    getContent: builder.query<string, { channelId: string; type: string }>({
       query: ({ channelId, type }) => ({
         url: endpoints.channels.getContent,
         params: { channelId, type },
+      }),
+    }),
+    copyContent: builder.mutation<
+      void,
+      { content: string; channelId: string; sourceType: string }
+    >({
+      query: (body) => ({
+        url: endpoints.channels.copyContent
+          .replace(":id", body.channelId)
+          .replace(":type", body.sourceType),
+        method: "PATCH",
+        body,
       }),
     }),
   }),
@@ -53,4 +66,5 @@ export const {
   useSaveContentMutation,
   useUpdateChannelMutation,
   useGetContentQuery,
+  useCopyContentMutation,
 } = channelsApi;

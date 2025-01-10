@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs } from "react-router-dom";
+import { LoaderFunctionArgs, Params } from "react-router-dom";
 import { channelsApi } from "../../store/channels/api";
 import { store } from "../../store/store";
 
@@ -26,6 +26,14 @@ const handle = {
       url: "/channels",
     },
   ],
+  extraBreadcrumbs: (routerParams: Readonly<Params<string>>) => {
+    return [
+      {
+        title: "Channel",
+        url: `/channels/${routerParams.name}`,
+      },
+    ];
+  },
 };
 
-export default { loader };
+export default { loader, handle };

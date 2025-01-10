@@ -1,3 +1,6 @@
 .container {
   cursor: pointer;
+  width: 300px;
+  white-space: break-spaces;
+  word-wrap: break-word;
 }

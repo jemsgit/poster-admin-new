@@ -14,11 +14,6 @@ function DasboardListItem(props: DasboardListItemProps) {
     <Card
       title={title}
       bordered
-      style={{
-        width: "300px",
-        whiteSpace: "break-spaces",
-        wordWrap: "break-word",
-      }}
       onClick={() => onClick?.()}
       className={styles.container}
     >

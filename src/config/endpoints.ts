@@ -9,6 +9,7 @@ const endpoints = {
     getContent: "/api/channels/content",
     saveContent: "/api/channels/content",
     update: "/api/channels/:id/update",
+    copyContent: "/api/channels/copy-content/:id/:type",
   },
   bots: {
     get: "/api/bots",

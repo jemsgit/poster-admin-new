@@ -1,7 +1,8 @@
 import React from "react";
 import AuthProtected from "../AuthProtected/AuthProtected";
-import { Link, Outlet, useMatches } from "react-router-dom";
+import { Link, Outlet, UIMatch, useMatches, useParams } from "react-router-dom";
 import { Breadcrumb, Layout as AntLayout, Menu, theme } from "antd";
+import { RouterHandle, RouterLoader } from "../../routes/routes.types";
 
 const { Header, Content, Footer } = AntLayout;
 
@@ -10,13 +11,22 @@ function Layout() {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const matches = useMatches();
+  const params = useParams();
+  console.log(params);
 
-  const match = matches.filter((m) => m.pathname === location.pathname);
+  const matches = useMatches() as UIMatch<RouterLoader, RouterHandle>[];
+
+  const match = matches.filter((m) => m.pathname === location.pathname).pop();
   let breadcrumbs;
 
-  if (match[0].handle && match[0].handle.breadcrumbs) {
-    breadcrumbs = match[0].handle.breadcrumbs;
+  console.log(match);
+
+  if (match?.handle?.breadcrumbs) {
+    breadcrumbs = match.handle.breadcrumbs;
+  }
+
+  if (match?.handle?.extraBreadcrumbs) {
+    breadcrumbs = breadcrumbs?.concat(match?.handle.extraBreadcrumbs(params));
   }
 
   return (
@@ -32,7 +42,14 @@ function Layout() {
             style={{ flex: 1, minWidth: 0 }}
           />
         </Header>
-        <Content style={{ padding: "0 48px" }}>
+        <Content
+          style={{
+            padding: "0 48px",
+            maxWidth: "1500px",
+            margin: "0 auto",
+            width: "100%",
+          }}
+        >
           <Breadcrumb style={{ margin: "16px 0" }}>
             {breadcrumbs?.map((item) => {
               return (

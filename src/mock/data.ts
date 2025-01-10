@@ -61,6 +61,22 @@ export default function mocks(): MockMethod[] {
       },
     },
     {
+      url: "/api/channels/content",
+      method: "get",
+      timeout: 2000,
+      response: () => {
+        return "https://trst.rewr.derw esfrasdnfk lkasjdflk alsdfk a;lsdfk\r\nhttps://vcvfvf.sdfsdf.fsdfsd esfrasdnfk lkasjdflk alsdfk a;lsdfk";
+      },
+    },
+    {
+      url: "/api/channels/copy-content/web_stack/main",
+      method: "patch",
+      timeout: 2000,
+      response: () => {
+        return "Ok";
+      },
+    },
+    {
       url: "/api/bots",
       method: "get",
       timeout: 200,

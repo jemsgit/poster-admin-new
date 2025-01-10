@@ -5,10 +5,10 @@ import { channelsApi } from "../../store/channels/api";
 import { grabbersApi } from "../../store/grabbers/api";
 import { DashboardData } from "./types";
 import { RouterLoader } from "../../routes/routes.types";
-// import { defer } from "react-router-dom";
 
 const loader = async (): Promise<RouterLoader<DashboardData>> => {
   const botsQuery = store.dispatch(botsApi.endpoints.bots.initiate());
+
   const channelsQuery = store.dispatch(
     channelsApi.endpoints.channels.initiate()
   );

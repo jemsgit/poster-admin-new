@@ -1,3 +1,3 @@
 export interface Bot {
-  name: string;
+  username: string;
 }
