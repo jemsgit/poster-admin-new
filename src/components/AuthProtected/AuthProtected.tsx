@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { useSelector } from "react-redux";
 import { isUserAuthSelector } from "../../store/user/user";
 import { Navigate } from "react-router-dom";

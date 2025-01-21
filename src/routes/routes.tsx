@@ -10,86 +10,97 @@ import Channel from "../pages/Channel/Channel";
 import ContentEditor from "../pages/ContentEditor/ContentEditor";
 import contentEditLoader from "../pages/ContentEditor/ContentEditor.model";
 
+const basename = import.meta.env.BASE_URL || "/";
+
 const getRoutes = () => {
-  return createBrowserRouter([
-    {
-      path: "",
-      errorElement: <Error />,
-      children: [
-        {
-          path: "/login",
-          Component: Login,
-        },
-        {
-          path: "",
-          element: <Layout />,
-          children: [
-            {
-              path: "/channels", // Accessible at "/channels"
-              children: [
-                {
-                  index: true,
-                  element: <Channels />,
-                },
-                {
-                  path: ":name",
-                  element: <Channel />,
-                  loader: channelLoader.loader,
-                  handle: channelLoader.handle,
-                },
-                {
-                  path: "content-edit/:name/:type",
-                  element: <ContentEditor />,
-                  loader: contentEditLoader.loader,
-                  handle: contentEditLoader.handle,
-                },
-              ],
-            },
-            {
-              path: "bots", // Accessible at "/bots"
-              children: [
-                {
-                  index: true,
-                  element: <Channels />,
-                },
-                {
-                  path: ":name",
-                  element: <Channel />,
-                },
-              ],
-            },
-            {
-              path: "grabbers", // Accessible at "/channels"
-              loader: dashboardLoader.loader,
-              handle: dashboardLoader.handle,
-              children: [
-                {
-                  index: true,
-                  element: <Channels />,
-                },
-                {
-                  path: ":name",
-                  element: <Channel />,
-                },
-              ],
-            },
-            {
-              path: "/", // Accessible at "/dashboard"
-              element: <Dashboard />,
-              loader: dashboardLoader.loader,
-              handle: dashboardLoader.handle,
-            },
-            {
-              path: "dashboard", // Accessible at "/dashboard"
-              element: <Dashboard />,
-              loader: dashboardLoader.loader,
-              handle: dashboardLoader.handle,
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  return createBrowserRouter(
+    [
+      {
+        path: "",
+        errorElement: <Error />,
+        children: [
+          {
+            path: "/login",
+            Component: Login,
+          },
+          {
+            path: "",
+            element: <Layout />,
+            children: [
+              {
+                path: "/channels", // Accessible at "/channels"
+                children: [
+                  {
+                    index: true,
+                    element: <Channels />,
+                  },
+                  {
+                    path: ":name",
+                    element: <Channel />,
+                    loader: channelLoader.loader,
+                    handle: channelLoader.handle,
+                  },
+                  {
+                    path: "content-edit/:name/:type",
+                    element: <ContentEditor />,
+                    loader: contentEditLoader.loader,
+                    handle: contentEditLoader.handle,
+                  },
+                ],
+              },
+              {
+                path: "bots", // Accessible at "/bots"
+                children: [
+                  {
+                    index: true,
+                    element: <Channels />,
+                  },
+                  {
+                    path: ":name",
+                    element: <Channel />,
+                  },
+                ],
+              },
+              {
+                path: "grabbers", // Accessible at "/channels"
+                loader: dashboardLoader.loader,
+                handle: dashboardLoader.handle,
+                children: [
+                  {
+                    index: true,
+                    element: <Channels />,
+                  },
+                  {
+                    path: ":name",
+                    element: <Channel />,
+                  },
+                ],
+              },
+              {
+                path: "/", // Accessible at "/dashboard"
+                element: <Dashboard />,
+                loader: dashboardLoader.loader,
+                handle: dashboardLoader.handle,
+              },
+              {
+                path: "dashboard", // Accessible at "/dashboard"
+                element: <Dashboard />,
+                loader: dashboardLoader.loader,
+                handle: dashboardLoader.handle,
+              },
+              {
+                path: "*", // replace for 404
+                element: <Dashboard />,
+                loader: dashboardLoader.loader,
+                handle: dashboardLoader.handle,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    { basename }
+  );
 };
 
 const router = getRoutes();

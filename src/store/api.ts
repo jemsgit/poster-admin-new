@@ -12,7 +12,12 @@ import { setUserIsAuth } from "../adapters/localStorageAdapter";
 
 export const apiTags = ["Channels", "Bots", "Grabbers"];
 
-const baseQuery = fetchBaseQuery({ baseUrl: "/" });
+const baseUrl = import.meta.env.BASE_URL || "/";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  credentials: "include",
+});
 
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,

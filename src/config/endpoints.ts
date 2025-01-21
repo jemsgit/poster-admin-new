@@ -4,11 +4,11 @@ const endpoints = {
     refresh: "/api/login/refresh",
   },
   channels: {
-    get: "/api/channels",
-    getSingle: "/api/channels/:id",
+    get: "/api/channels/info",
+    getSingle: "/api/channels/info/:id",
     getContent: "/api/channels/content",
     saveContent: "/api/channels/content",
-    update: "/api/channels/:id/update",
+    update: "/api/channels/info/:id/update",
     copyContent: "/api/channels/copy-content/:id/:type",
   },
   bots: {

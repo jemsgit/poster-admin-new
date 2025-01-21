@@ -1,9 +1,8 @@
 import { Typography } from "antd";
-import React, { Suspense } from "react";
-import { Await, useNavigate, useNavigation } from "react-router-dom";
-import { RouterLoader } from "../../routes/routes.types";
+import { useNavigate } from "react-router-dom";
+
 import { DashboardData } from "./types";
-import { useLoaderApi, useLoaderData } from "../../utils/router";
+import { useLoaderApi } from "../../utils/router";
 import DasboardListItem from "../../components/DasboardListItem/DasboardListItem";
 import InlineList from "../../components/InlineList/InlineList";
 import { Bot } from "../../models/bot";
@@ -14,19 +13,27 @@ const { Title } = Typography;
 
 const mapChannelToContent = (channel: Channel): string => {
   const {
-    hasDraft,
-    postingSettings: { times, type },
-    graberSettings: { times: grabberTimes, modulePath },
+    postingSettings: { times, type, loadImage },
+    graberSettings,
   } = channel;
+
+  let grabberInfo = "";
+  let hasDraft = false;
+  if (graberSettings) {
+    const { times, modulePath, hasDraft: hasDraftGrabber } = graberSettings;
+    hasDraft = hasDraftGrabber;
+    grabberInfo = `
+Grabber:
+Time: ${times},
+Module: ${modulePath}`;
+  }
   return `Has draft: ${hasDraft ? "Yes" : "No"}
 
 Posting:
 Time: ${times},
 Type: ${type}
-
-Grabber:
-Time: ${grabberTimes},
-Module: ${modulePath}`;
+loadImage: ${loadImage}
+${grabberInfo}`;
 };
 
 const mapBotsToContent = (bot: Bot): string => {
@@ -91,7 +98,7 @@ function Dashboard() {
             title={bot.username}
             key={bot.username}
             content={mapBotsToContent(bot)}
-            onClick={() => handleBotClick(bot.name)}
+            onClick={() => handleBotClick(bot.username)}
           />
         ))}
       </InlineList>

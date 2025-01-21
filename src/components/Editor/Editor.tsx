@@ -193,6 +193,7 @@ const Editor = ({
     const text = inputRef
       .current!.innerText.replace(/\n\n/g, "\n")
       .replace(new RegExp(String.fromCharCode(160), "g"), " ");
+    console.log(text);
     onSave(text);
   }, [onSave]);
 

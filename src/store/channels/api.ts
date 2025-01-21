@@ -1,5 +1,5 @@
 import endpoints from "../../config/endpoints";
-import { Channel } from "../../models/channel";
+import { Channel, ContentInfo } from "../../models/channel";
 import api from "../api";
 
 export const channelsApi = api.injectEndpoints({
@@ -44,6 +44,7 @@ export const channelsApi = api.injectEndpoints({
         url: endpoints.channels.getContent,
         params: { channelId, type },
       }),
+      transformResponse: (data: ContentInfo) => data.content,
     }),
     copyContent: builder.mutation<
       void,

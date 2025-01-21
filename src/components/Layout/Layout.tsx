@@ -1,6 +1,12 @@
-import React from "react";
 import AuthProtected from "../AuthProtected/AuthProtected";
-import { Link, Outlet, UIMatch, useMatches, useParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  UIMatch,
+  useMatches,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { Breadcrumb, Layout as AntLayout, Menu, theme } from "antd";
 import { RouterHandle, RouterLoader } from "../../routes/routes.types";
 
@@ -12,14 +18,16 @@ function Layout() {
   } = theme.useToken();
 
   const params = useParams();
-  console.log(params);
+  const navigate = useNavigate();
 
   const matches = useMatches() as UIMatch<RouterLoader, RouterHandle>[];
 
   const match = matches.filter((m) => m.pathname === location.pathname).pop();
   let breadcrumbs;
 
-  console.log(match);
+  const handleMenuClick = (menu: { key: string }) => {
+    navigate(`./${menu.key}`);
+  };
 
   if (match?.handle?.breadcrumbs) {
     breadcrumbs = match.handle.breadcrumbs;
@@ -38,7 +46,12 @@ function Layout() {
             theme="dark"
             mode="horizontal"
             defaultSelectedKeys={["2"]}
-            items={[]}
+            onClick={handleMenuClick}
+            items={[
+              { label: "Channels", key: "channels" },
+              { label: "Dashboard", key: "dashboard" },
+              { label: "Utils", key: "utils" },
+            ]}
             style={{ flex: 1, minWidth: 0 }}
           />
         </Header>
@@ -53,7 +66,7 @@ function Layout() {
           <Breadcrumb style={{ margin: "16px 0" }}>
             {breadcrumbs?.map((item) => {
               return (
-                <Breadcrumb.Item>
+                <Breadcrumb.Item key={item.title}>
                   <Link to={item.url} key={item.url}>
                     {item.title}
                   </Link>

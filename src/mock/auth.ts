@@ -1,7 +1,6 @@
 import { MockMethod } from "vite-plugin-mock";
 
 export default function mocks(): MockMethod[] {
-  console.log("here");
   return [
     {
       url: "/api/login",
@@ -38,10 +37,10 @@ export default function mocks(): MockMethod[] {
     {
       url: "/api/validate",
       method: "get",
-      response: (req) => {
+      response: (req: { headers: { cookie: string } }) => {
         const jwtCookie = req.headers.cookie
           ?.split("; ")
-          .find((c) => c.startsWith("jwt="));
+          .find((c: string) => c.startsWith("jwt="));
         const token = jwtCookie?.split("=")[1];
 
         if (token === "mocked-jwt-token") {

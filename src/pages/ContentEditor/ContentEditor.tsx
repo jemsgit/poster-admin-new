@@ -1,4 +1,3 @@
-import React from "react";
 import Editor from "../../components/Editor/Editor";
 import { Typography } from "antd";
 import { useLoaderApi } from "../../utils/router";

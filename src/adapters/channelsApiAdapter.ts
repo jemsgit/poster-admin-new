@@ -5,10 +5,7 @@ export function mapChannelsToTargets(channels: Channel[]): ContentCopyTarget[] {
     if (!acc[cur.username]) {
       acc[cur.username] = [];
     }
-    const targets = ["main"];
-    if (cur.hasDraft) {
-      targets.push("draft");
-    }
+    const targets = ["main", "draft", "result", "rss-list", "rss-result"];
     acc[cur.username] = targets.slice();
     return acc;
   }, {} as Record<string, string[]>);

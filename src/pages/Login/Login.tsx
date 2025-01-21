@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./Login.module.css";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
 import { Typography } from "antd";
@@ -28,7 +27,7 @@ function Login() {
       let res = await login(formData).unwrap();
       dispatch(setUserData(res as User));
       setUserIsAuth(true);
-      navigate("/channels", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (e) {
       console.log(e);
     }

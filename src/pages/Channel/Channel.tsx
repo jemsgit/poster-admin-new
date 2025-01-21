@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLoaderApi } from "../../utils/router";
-import { Channel as ChannelModel, ContentType } from "../../models/channel";
+import {
+  Channel as ChannelModel,
+  ContentType,
+  RourceItem,
+} from "../../models/channel";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -18,6 +22,14 @@ import styles from "./Channel.module.css";
 const { Title, Text } = Typography;
 const { Option } = Select;
 
+const contentResources: RourceItem[] = [
+  { title: "Main content", type: "main" },
+  { title: "Draft", type: "draft" },
+  { title: "Result", type: "result" },
+  { title: "RSS List", type: "rss-list" },
+  { title: "rss result", type: "rss-result" },
+];
+
 const Channel = () => {
   const { data: channel, isLoading, isError } = useLoaderApi<ChannelModel>();
   const navigate = useNavigate();
@@ -33,17 +45,18 @@ const Channel = () => {
     if (channel) {
       updateChannel({
         channelInfo: {
-          hasDraft: values.hasDraft,
           postingSettings: {
             ...channel.postingSettings,
             type: values.type,
             loadImage: values.loadImage,
             times: values.postingTimes,
           },
-          graberSettings: {
-            ...channel.graberSettings,
-            times: values.graberTimes,
-          },
+          graberSettings: channel.graberSettings
+            ? {
+                ...(channel.graberSettings || {}),
+                times: values.graberTimes,
+              }
+            : undefined,
         },
         channelId: channel.username,
       });
@@ -56,7 +69,7 @@ const Channel = () => {
       <Text strong>Username:</Text> <Text>{channel!.username}</Text>
       <br />
       <Text strong>Has Draft:</Text>{" "}
-      <Text>{channel!.hasDraft ? "Yes" : "No"}</Text>
+      <Text>{channel!.graberSettings?.hasDraft ? "Yes" : "No"}</Text>
       <br />
       <Text strong>Posting Type:</Text>{" "}
       <Text>{channel!.postingSettings.type}</Text>
@@ -68,7 +81,7 @@ const Channel = () => {
       <Text>{channel!.postingSettings.times.join(", ")}</Text>
       <br />
       <Text strong>Graber Times:</Text>{" "}
-      <Text>{channel!.graberSettings.times}</Text>
+      <Text>{channel!.graberSettings?.times}</Text>
     </>
   );
 
@@ -77,11 +90,11 @@ const Channel = () => {
       form={form}
       onFinish={handleSubmit}
       initialValues={{
-        hasDraft: channel!.hasDraft,
+        hasDraft: channel!.graberSettings?.hasDraft,
         type: channel!.postingSettings.type,
         loadImage: channel!.postingSettings.loadImage,
         postingTimes: channel!.postingSettings.times,
-        graberTimes: channel!.graberSettings.times,
+        graberTimes: channel!.graberSettings?.times,
       }}
     >
       <Form.Item name="hasDraft" label="Has Draft" valuePropName="checked">
@@ -137,29 +150,15 @@ const Channel = () => {
       {isEditing ? renderEditMode() : renderViewMode()}
       <Title level={4}>Edit Content</Title>
       <Flex gap={12}>
-        <Card
-          bordered
-          className={styles.contentEditPlate}
-          onClick={() => handleEdit("main")}
-        >
-          Main content
-        </Card>
-        {channel.hasDraft && (
+        {contentResources.map((item) => (
           <Card
             bordered
             className={styles.contentEditPlate}
-            onClick={() => handleEdit("draft")}
+            onClick={() => handleEdit(item.type)}
           >
-            Draft content
+            {item.title}
           </Card>
-        )}
-        <Card
-          bordered
-          className={styles.contentEditPlate}
-          onClick={() => handleEdit("result")}
-        >
-          Result content
-        </Card>
+        ))}
       </Flex>
     </Card>
   );
