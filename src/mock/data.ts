@@ -3,7 +3,7 @@ import { MockMethod } from "vite-plugin-mock";
 export default function mocks(): MockMethod[] {
   return [
     {
-      url: "/api/channels",
+      url: "/api/channels/info",
       method: "get",
       timeout: 200,
       response: () => {
@@ -40,7 +40,7 @@ export default function mocks(): MockMethod[] {
       },
     },
     {
-      url: "/api/channels/front_end_dev",
+      url: "/api/channels/info/front_end_dev",
       method: "get",
       timeout: 200,
       response: () => {

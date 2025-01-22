@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { Breadcrumb, Layout as AntLayout, Menu, theme } from "antd";
 import { RouterHandle, RouterLoader } from "../../routes/routes.types";
+import styles from "./Layout.module.css";
 
 const { Header, Content, Footer } = AntLayout;
 
@@ -39,7 +40,7 @@ function Layout() {
 
   return (
     <AuthProtected>
-      <AntLayout style={{ minHeight: "100vh" }}>
+      <AntLayout className={styles.layout}>
         <Header style={{ display: "flex", alignItems: "center" }}>
           <div className="demo-logo" />
           <Menu
@@ -55,14 +56,7 @@ function Layout() {
             style={{ flex: 1, minWidth: 0 }}
           />
         </Header>
-        <Content
-          style={{
-            padding: "0 48px",
-            maxWidth: "1500px",
-            margin: "0 auto",
-            width: "100%",
-          }}
-        >
+        <Content className={styles.content}>
           <Breadcrumb style={{ margin: "16px 0" }}>
             {breadcrumbs?.map((item) => {
               return (
@@ -75,10 +69,9 @@ function Layout() {
             })}
           </Breadcrumb>
           <div
+            className={styles.contentInner}
             style={{
               background: colorBgContainer,
-              minHeight: 280,
-              padding: 24,
               borderRadius: borderRadiusLG,
             }}
           >
