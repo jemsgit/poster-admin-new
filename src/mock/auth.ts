@@ -7,7 +7,6 @@ export default function mocks(): MockMethod[] {
       method: "post",
       // Set a cookie in the response headers
       rawResponse: async (req, res) => {
-        console.log(req);
         let body = "";
 
         // Listen for data and accumulate it

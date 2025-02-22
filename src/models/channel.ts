@@ -1,5 +1,5 @@
-type PostingType = "link" | "video";
-type LoadImageConfig = boolean | "random";
+export type PostingType = "links" | "video" | "custom";
+export type LoadImageConfig = boolean | "random";
 export type ContentType =
   | "draft"
   | "main"

@@ -4,6 +4,7 @@ import { viteMockServe } from "vite-plugin-mock";
 
 export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  console.log(process.env.USE_MOCKS);
   return {
     plugins: [
       react(),

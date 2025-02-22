@@ -19,6 +19,9 @@ const endpoints = {
     get: "/api/grabbers",
     getSingle: "/api/grabbers/:id",
   },
+  suggestions: {
+    ask: "/api/suggestions/ask",
+  },
 };
 
 export default endpoints;

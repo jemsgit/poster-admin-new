@@ -1,5 +1,5 @@
 import styles from "./Login.module.css";
-import { Button, Checkbox, Flex, Form, Input } from "antd";
+import { Button, Checkbox, Flex, Form, Input, notification } from "antd";
 import { Typography } from "antd";
 import { useLoginMutation } from "../../store/auth/api";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { setUserData } from "../../store/user/user";
 import { setUserIsAuth } from "../../adapters/localStorageAdapter";
 import { User } from "../../models/user";
 import { LoginFormData } from "./types";
+import { useEffect } from "react";
 
 const { Title } = Typography;
 
@@ -38,6 +39,17 @@ function Login() {
   };
 
   console.log(loginResult);
+
+  useEffect(() => {
+    if (loginResult.isError) {
+      const apiError = loginResult.error as {
+        data: {
+          message: string;
+        };
+      };
+      notification.error({ message: apiError.data.message });
+    }
+  }, [loginResult.isError, loginResult.error]);
 
   return (
     <div className={styles.page}>

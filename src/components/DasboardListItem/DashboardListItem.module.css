@@ -3,4 +3,12 @@
   width: 300px;
   white-space: break-spaces;
   word-wrap: break-word;
+  background-color: #1677ff54;
+  box-shadow: 3px 4px 6px 1px #0000007d;
+}
+
+@media (max-width: 420px) {
+  .container {
+    width: 100%;
+  }
 }

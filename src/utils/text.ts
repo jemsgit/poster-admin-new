@@ -7,7 +7,6 @@ function textToHtml(text: string): string {
     acc.innerHTML += `<div>${divEl.innerHTML}</div>`;
     return acc;
   }, document.createElement("div"));
-  console.log(html.innerHTML);
   return html.innerHTML;
 }
 

@@ -20,13 +20,26 @@
     font-size: 1.05em;
     counter-increment: line-number;
     color: var(--color-main-on-white-font);
+    word-break: break-word;
 
     &:before {
-      content: counter(line-number) " ";
+      content: counter(line-number) "";
+      background: #ff00b173;
+      border-radius: 4px;
+      padding: 2px;
+      margin-right: 4px;
+      min-width: 15px;
+      display: inline-flex;
+      justify-content: center;
     }
 
     &:nth-child(even) {
       background: #927cff38;
+    }
+
+    @media (max-width: 420px) {
+      line-height: 22px;
+      font-size: 1.25em;
     }
   }
 }
@@ -79,4 +92,9 @@
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(5px);
+}
+
+.fixedPosition {
+  position: fixed;
+  width: 100%;
 }

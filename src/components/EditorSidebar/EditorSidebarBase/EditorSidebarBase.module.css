@@ -1,0 +1,14 @@
+.sidebar {
+  width: 100%;
+}
+
+.toggle {
+  margin-bottom: 8px;
+}
+
+.resultButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  margin-top: 4px;
+}

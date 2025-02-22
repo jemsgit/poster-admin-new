@@ -30,7 +30,7 @@ const baseQueryWithReauth: BaseQueryFn<
     const refreshResult = await baseQuery(
       {
         url: endpoints.login.refresh,
-        method: "POST",
+        method: "GET",
       },
       api,
       extraOptions

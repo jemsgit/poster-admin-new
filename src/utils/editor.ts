@@ -40,7 +40,7 @@ export function updateSelectedElements(
   if (currentRange[0] !== null) {
     let [start, end] = currentRange;
     const elements = container.children;
-    if (!end) {
+    if (end == undefined) {
       end = start;
     }
     const content = Array.from(elements);
@@ -55,4 +55,15 @@ export function updateSelectedElements(
       }
     }
   }
+}
+
+export function copyTextToClipboard(text: string) {
+  navigator.clipboard.writeText(text).then(
+    function () {
+      console.log("Async: Copying to clipboard was successful!");
+    },
+    function (err) {
+      console.error("Async: Could not copy text: ", err);
+    }
+  );
 }

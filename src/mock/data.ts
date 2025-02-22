@@ -65,7 +65,12 @@ export default function mocks(): MockMethod[] {
       method: "get",
       timeout: 2000,
       response: () => {
-        return "https://trst.rewr.derw esfrasdnfk lkasjdflk alsdfk a;lsdfk\r\nhttps://vcvfvf.sdfsdf.fsdfsd esfrasdnfk lkasjdflk alsdfk a;lsdfk";
+        return {
+          channelId: "@front_end_dev",
+          content:
+            "https://trst.rewr.derw esfrasdnfk lkasjdflk alsdfk a;lsdfk\r\nhttps://vcvfvf.sdfsdf.fsdfsd esfrasdnfk lkasjdflk alsdfk a;lsdfk",
+          type: "main",
+        };
       },
     },
     {
@@ -74,6 +79,17 @@ export default function mocks(): MockMethod[] {
       timeout: 2000,
       response: () => {
         return "Ok";
+      },
+    },
+    {
+      url: "/api/suggestions/ask",
+      method: "post",
+      timeout: 200,
+      response: () => {
+        return {
+          answer: "This is the answer" + Math.random(),
+          limit: 123,
+        };
       },
     },
     {

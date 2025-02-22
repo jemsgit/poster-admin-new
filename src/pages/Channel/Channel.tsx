@@ -102,7 +102,7 @@ const Channel = () => {
       </Form.Item>
       <Form.Item name="type" label="Posting Type">
         <Select>
-          <Option value="link">Link</Option>
+          <Option value="links">Link</Option>
           <Option value="video">Video</Option>
         </Select>
       </Form.Item>
@@ -149,7 +149,7 @@ const Channel = () => {
     >
       {isEditing ? renderEditMode() : renderViewMode()}
       <Title level={4}>Edit Content</Title>
-      <Flex gap={12}>
+      <Flex gap={12} wrap="wrap">
         {contentResources.map((item) => (
           <Card
             bordered

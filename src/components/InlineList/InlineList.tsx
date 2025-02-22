@@ -1,13 +1,15 @@
 import { PropsWithChildren } from "react";
+import useDesktopMode from "../../hooks/useDesktopMode";
 
 function InlineList(props: PropsWithChildren) {
   const { children } = props;
+  const isDesktop = useDesktopMode();
 
   return (
     <section
       style={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: isDesktop ? "row" : "column",
         flexWrap: "wrap",
         gap: "12px",
       }}

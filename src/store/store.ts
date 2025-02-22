@@ -1,6 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import api from "./api";
 import userReducer from "./user/user";
+import editorReducer from "./editor/editor";
+import appReducer from "./app/app";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 function createStore() {
@@ -8,6 +10,8 @@ function createStore() {
     reducer: {
       [api.reducerPath]: api.reducer,
       user: userReducer,
+      editor: editorReducer,
+      app: appReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(api.middleware),

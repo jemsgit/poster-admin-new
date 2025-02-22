@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button, Dropdown, Flex, MenuProps, Spin } from "antd";
+import { CopyOutlined } from "@ant-design/icons";
 
 import { escapeHtml, renderText } from "../../utils/text";
 import styles from "./Editor.module.css";
@@ -11,20 +12,26 @@ import {
   updateSelectedElements,
 } from "../../utils/editor";
 import { ContentCopyTarget } from "../../models/channel";
+import useDesktopMode from "../../hooks/useDesktopMode";
 
 const ACTIVE_CLASS = styles.active;
 const SELECTED_TO_MOVE_CLASS = styles.seletedToMove;
+const FIXED_BODY_CLASS = styles.fixedPosition;
 
 interface IProps {
   content: string;
   isSaving: boolean;
   availableTargetsToCopy: ContentCopyTarget[];
+  className?: string;
+  activeElementRef: { current: HTMLElement | undefined };
   onSave: (text: string) => void;
   onContentCopy: (
     content: string,
     channel: string,
     target: string
   ) => Promise<boolean>;
+  onContentClick: (text: string) => void;
+  onSidebarIconClick: () => void;
 }
 
 type ActionFunc = (
@@ -86,12 +93,47 @@ const actions = {
 
 type Action = "copy";
 
+const handleEditorFocus = () => {
+  document.body.classList.add(FIXED_BODY_CLASS);
+};
+
+const handleEditorBlur = () => {
+  document.body.classList.remove(FIXED_BODY_CLASS);
+};
+
+let startY = 0;
+
+const handleTouchStart = (event: TouchEvent) => {
+  startY = event.touches[0].clientY;
+};
+
+const handleTouchScroll = (event: TouchEvent) => {
+  const scrollableDiv = event.currentTarget as HTMLElement;
+  const isScrollable = scrollableDiv.scrollHeight > scrollableDiv.clientHeight;
+
+  if (isScrollable) {
+    const currentY = event.touches[0].clientY;
+    const deltaY = startY - currentY;
+
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    scrollableDiv.scrollTop += deltaY;
+
+    startY = currentY;
+  }
+};
+
 const Editor = ({
   content,
   isSaving,
   availableTargetsToCopy,
+  className,
+  activeElementRef,
   onSave,
   onContentCopy,
+  onContentClick,
+  onSidebarIconClick,
 }: IProps) => {
   const inputRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLElement | null>(null);
@@ -99,6 +141,8 @@ const Editor = ({
   const [elementsRange, setElementsRange] = useState<
     [number | null, number | null]
   >([null, null]);
+
+  const isDesktop = useDesktopMode();
 
   const handleResetContent = () => {
     if (!inputRef.current) {
@@ -110,13 +154,20 @@ const Editor = ({
 
   const setActiveElement = useCallback((el?: HTMLElement) => {
     if (!el) {
+      onContentClick("");
+      if (activeElementRef && activeElementRef.current) {
+        activeElementRef.current = undefined;
+      }
+
       return;
     }
+    activeElementRef.current = el;
     if (activeRef.current) {
       activeRef.current.classList.remove(ACTIVE_CLASS);
     }
     activeRef.current = el;
     el.classList.add(ACTIVE_CLASS);
+    onContentClick(el.innerText);
   }, []);
 
   const handleMouseClick = (e: MouseEvent) => {
@@ -144,7 +195,7 @@ const Editor = ({
 
   const handleContentCopy: MenuProps["onClick"] = async (e) => {
     const [sourceType, channelId] = e.keyPath;
-    content = "";
+    let content = "";
     const elements = Array.from(inputRef.current!.children);
     if (elementsRange.every((item) => item !== null)) {
       content = elements
@@ -193,7 +244,6 @@ const Editor = ({
     const text = inputRef
       .current!.innerText.replace(/\n\n/g, "\n")
       .replace(new RegExp(String.fromCharCode(160), "g"), " ");
-    console.log(text);
     onSave(text);
   }, [onSave]);
 
@@ -205,12 +255,26 @@ const Editor = ({
 
     currentRef.addEventListener("mousedown", handleOpenLink);
     currentRef.addEventListener("mousedown", handleMouseClick);
+    currentRef.addEventListener("focus", handleEditorFocus);
+    currentRef.addEventListener("blur", handleEditorBlur);
+
+    currentRef.addEventListener("touchstart", handleTouchStart);
+    currentRef.addEventListener("touchmove", handleTouchScroll);
 
     return () => {
       currentRef.removeEventListener("mousedown", handleOpenLink);
       currentRef.removeEventListener("mousedown", handleMouseClick);
+      currentRef.removeEventListener("focus", handleEditorFocus);
+      currentRef.removeEventListener("blur", handleEditorBlur);
+
+      currentRef.removeEventListener("touchstart", handleTouchStart);
+      currentRef.removeEventListener("touchmove", handleTouchScroll);
     };
   }, [content, currentAction, elementsRange]);
+
+  useEffect(() => {
+    return handleEditorBlur;
+  });
 
   useEffect(() => {
     if (!inputRef.current) {
@@ -236,6 +300,7 @@ const Editor = ({
       return;
     }
     actions[action](inputRef, activeRef.current);
+    inputRef.current?.focus();
   }, []);
 
   const handleActionChange = (action: Action | null) => {
@@ -265,20 +330,40 @@ const Editor = ({
       );
     } else {
       return (
-        <Button
-          htmlType="button"
-          size="small"
-          className={styles.controlButton}
-          onClick={() => handleActionChange("copy")}
-        >
-          Copy
-        </Button>
+        <>
+          <Button
+            htmlType="button"
+            size="small"
+            className={styles.controlButton}
+            onClick={() => handleActionChange("copy")}
+          >
+            Copy To
+          </Button>
+          <Button
+            htmlType="button"
+            size="small"
+            className={styles.controlButton}
+            onClick={() => handleActionChange("copy")}
+          >
+            <CopyOutlined />
+          </Button>
+          {!isDesktop ? (
+            <Button
+              htmlType="button"
+              size="small"
+              className={styles.controlButton}
+              onClick={onSidebarIconClick}
+            >
+              Sidebar
+            </Button>
+          ) : null}
+        </>
       );
     }
   };
 
   return (
-    <section className={styles.editor}>
+    <section className={`${styles.editor} ${className || ""}`}>
       <Flex vertical className={styles.editorControls} gap={5}>
         <Flex gap={5}>
           <Button
