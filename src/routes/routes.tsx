@@ -12,6 +12,11 @@ import ContentEditor from "../pages/ContentEditor/ContentEditor";
 import contentEditLoader from "../pages/ContentEditor/ContentEditor.model";
 import GrabberPage from "../pages/Grabber/Grabber";
 import grabberLoader from "../pages/Grabber/Grabber.model";
+import imagesLoader from "../pages/Images/Images.model";
+import promptsLoader from "../pages/Prompts/Prompts.model";
+import Utils from "../pages/Utils/Utils";
+import Images from "../pages/Images/Images";
+import Prompts from "../pages/Prompts/Prompts";
 
 const basename = import.meta.env.BASE_URL || "/";
 
@@ -63,6 +68,27 @@ const getRoutes = () => {
                   {
                     path: ":name",
                     element: <Channel />,
+                  },
+                ],
+              },
+              {
+                path: "/utils", // Accessible at "/bots"
+                children: [
+                  {
+                    index: true,
+                    element: <Utils />,
+                  },
+                  {
+                    path: "images",
+                    loader: imagesLoader.loader,
+                    handle: imagesLoader.handle,
+                    element: <Images />,
+                  },
+                  {
+                    path: "prompts",
+                    loader: promptsLoader.loader,
+                    handle: promptsLoader.handle,
+                    element: <Prompts />,
                   },
                 ],
               },

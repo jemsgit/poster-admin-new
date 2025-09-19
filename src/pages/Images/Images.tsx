@@ -16,16 +16,16 @@ import {
   useDeleteImageMutation,
   useUploadImageMutation,
 } from "../../store/utils/api";
+import { getImagePathByUrl } from "../../utils/images";
 
 const { Title } = Typography;
 
 const Images = () => {
-  const { data, isLoading, isError } = useLoaderApi<{ data: Image[] }>();
+  const { data, isLoading, isError } = useLoaderApi<{ images: Image[] }>();
   const [deleteImage, { isLoading: isDeleting }] = useDeleteImageMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
   const [deleteName, setDeleteName] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [fileList, setFileList] = useState<any[]>([]);
 
   const refetch = () => window.location.reload(); // fallback for loaderApi
 
@@ -52,10 +52,7 @@ const Images = () => {
 
   const handleUpload = async ({ file }: any) => {
     try {
-      await uploadImage({
-        ImageInfo: { filename: file.name },
-        ImageId: file.name,
-      }).unwrap();
+      await uploadImage(file).unwrap();
       message.success("Image uploaded");
       refetch();
     } catch {
@@ -84,7 +81,7 @@ const Images = () => {
         <p className="ant-upload-text">Click or drag image to upload</p>
       </Upload.Dragger>
       <List
-        dataSource={data.data || []}
+        dataSource={data.images || []}
         renderItem={(item) => (
           <List.Item
             actions={[
@@ -100,11 +97,28 @@ const Images = () => {
               >
                 Delete
               </Button>,
+              <Button
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+                loading={isDeleting && deleteName === item.filename}
+                onClick={async () => {
+                  try {
+                    const url = getImagePathByUrl(item.url);
+                    await navigator.clipboard.writeText(getImagePathByUrl(url));
+                    message.success("Copied! " + url);
+                  } catch {
+                    message.error("Failed to copy");
+                  }
+                }}
+              >
+                Copy url
+              </Button>,
             ]}
           >
             <Space>
               <img
-                src={item.url}
+                src={getImagePathByUrl(item.url)}
                 alt={item.filename}
                 style={{ maxHeight: 60, maxWidth: 100, objectFit: "contain" }}
               />

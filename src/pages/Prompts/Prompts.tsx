@@ -35,7 +35,7 @@ const Prompts = () => {
     try {
       await addPrompt({ text: input }).unwrap();
       setInput("");
-      //refetch();
+
       message.success("Prompt added");
     } catch {
       message.error("Failed to add prompt");
@@ -48,7 +48,6 @@ const Prompts = () => {
       await deletePrompt({ propmtId: deleteId }).unwrap();
       setDeleteId(null);
       setModalOpen(false);
-      //refetch();
       message.success("Prompt deleted");
     } catch {
       message.error("Failed to delete prompt");
@@ -76,6 +75,34 @@ const Prompts = () => {
                 }}
               >
                 Delete
+              </Button>,
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(item.text);
+                    message.success("Copied!");
+                  } catch {
+                    message.error("Failed to copy");
+                  }
+                }}
+              >
+                Copy
+              </Button>,
+              <Button
+                size="small"
+                onClick={async () => {
+                  try {
+                    let current = await navigator.clipboard.readText();
+                    current = `${current} ${item.text}`;
+                    navigator.clipboard.writeText(current);
+                    message.success("Copied! " + current);
+                  } catch {
+                    message.error("Failed to copy");
+                  }
+                }}
+              >
+                Copy with current
               </Button>,
             ]}
           >

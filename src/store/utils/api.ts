@@ -13,15 +13,17 @@ export const utilsApi = api.injectEndpoints({
       },
       providesTags: ["Images"],
     }),
-    uploadImage: builder.mutation<
-      void,
-      { ImageInfo: Partial<Image>; ImageId: string }
-    >({
-      query: (data) => ({
-        url: endpoints.utils.images.upload,
-        method: "POST",
-        data: data.ImageInfo,
-      }),
+    uploadImage: builder.mutation<void, File>({
+      query: (data) => {
+        const formData = new FormData();
+        formData.append("file", data);
+        return {
+          url: endpoints.utils.images.upload,
+          method: "POST",
+          body: formData,
+          formData: true,
+        };
+      },
     }),
     deleteImage: builder.mutation<void, { imageId: string }>({
       query: (body) => ({
@@ -43,7 +45,7 @@ export const utilsApi = api.injectEndpoints({
       query: (data) => ({
         url: endpoints.utils.prompts.add,
         method: "POST",
-        data: { text: data.text },
+        body: { text: data.text },
       }),
     }),
     deletePrompt: builder.mutation<void, { propmtId: string }>({

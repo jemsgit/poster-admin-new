@@ -25,14 +25,16 @@ const endpoints = {
   },
   utils: {
     images: {
+      getImage: "/api/utils/image",
+      getImageAndInfo: "/api/utils/fetch-images",
       get: "/api/utils/images",
-      upload: "/api/utils/image",
+      upload: "/api/utils/images",
       delete: "/api/utils/images/:id",
     },
     prompts: {
-      get: "/api/utils/prompts",
-      add: "/api/utils/prompts",
-      delete: "/api/utils/prompts/:id",
+      get: "/api/prompts",
+      add: "/api/prompts",
+      delete: "/api/prompts/:id",
     },
   },
 };

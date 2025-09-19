@@ -1,11 +1,12 @@
-import { LoaderFunctionArgs } from "react-router-dom";
 import { utilsApi } from "../../store/utils/api";
 import { store } from "../../store/store";
 
 const loader = () => {
   const imagesQuery = store
     .dispatch(utilsApi.endpoints.images.initiate())
-    .then((res) => res.data);
+    .then((res) => ({
+      images: res.data,
+    }));
   return {
     data: imagesQuery,
   };

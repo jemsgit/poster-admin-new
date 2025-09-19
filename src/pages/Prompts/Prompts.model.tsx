@@ -4,9 +4,13 @@ import { store } from "../../store/store";
 const loader = () => {
   const promptsQuery = store
     .dispatch(utilsApi.endpoints.prompts.initiate())
-    .then((res) => res.data);
+    .then((res) => {
+      return {
+        prompts: res.data,
+      };
+    });
   return {
-    prompts: promptsQuery,
+    data: promptsQuery,
   };
 };
 

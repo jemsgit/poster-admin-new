@@ -35,7 +35,7 @@ function PostPreview(props: Props) {
       if (parsedContent?.photo?.indexOf("source:") === 0) {
         parsedContent.photo = parsedContent.photo.replace(
           "source:",
-          "/api/utils/image?source="
+          `/${import.meta.env.BASE_URL || "/"}api/utils/image?source=`
         );
       }
       if (!parsedContent) parsedContent = { text: "" };

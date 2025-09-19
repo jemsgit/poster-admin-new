@@ -22,7 +22,9 @@ export const suggestionApi = api.injectEndpoints({
       string
     >({
       query: (url) => ({
-        url: `${endpoints.utils.images}?url=${encodeURIComponent(url)}`,
+        url: `${
+          endpoints.utils.images.getImageAndInfo
+        }?url=${encodeURIComponent(url)}`,
       }),
     }),
   }),
