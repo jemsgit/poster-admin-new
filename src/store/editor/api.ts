@@ -13,7 +13,19 @@ export const suggestionApi = api.injectEndpoints({
         };
       },
     }),
+    fetchImages: builder.query<
+      {
+        images: { url: string; base64: string }[];
+        article: string;
+        description?: string;
+      },
+      string
+    >({
+      query: (url) => ({
+        url: `${endpoints.utils.images}?url=${encodeURIComponent(url)}`,
+      }),
+    }),
   }),
 });
 
-export const { useAskMutation } = suggestionApi;
+export const { useAskMutation, useLazyFetchImagesQuery } = suggestionApi;

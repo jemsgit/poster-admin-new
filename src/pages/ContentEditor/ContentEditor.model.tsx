@@ -30,9 +30,9 @@ const loader = async (
     channelContentQuery,
     channelsQuery,
   ]).then((res) => {
-    let channel = res[0].data;
-    let content = res[1].data;
-    let targetsToCopy = mapChannelsToTargets(res[2].data || []);
+    const channel = res[0].data;
+    const content = res[1].data;
+    const targetsToCopy = mapChannelsToTargets(res[2].data || []);
     return {
       channel,
       content,
@@ -52,7 +52,7 @@ const handle = {
       url: "/",
     },
     {
-      title: "Channel",
+      title: "Channels",
       url: "/channels",
     },
   ],

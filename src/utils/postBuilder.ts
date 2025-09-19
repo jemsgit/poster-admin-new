@@ -37,7 +37,7 @@ export default class PostBuilder {
 
   setLink(link: string): PostBuilder {
     // _ sign makes text style italian so we have to wrap it with 'link' markup
-    if (link && link.includes("_")) {
+    if (link && link.indexOf("_") === 0) {
       link = "[" + link + "](" + link + ")";
     }
     this.link = link;
@@ -51,7 +51,7 @@ export default class PostBuilder {
   }
 
   build(): Post {
-    let result: Post = {
+    const result: Post = {
       text: this.hashTags + this.text + this.link,
     };
     result.text = result.text?.trim();

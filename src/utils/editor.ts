@@ -14,22 +14,28 @@ export function isParentEditable(el: HTMLElement) {
   return parent && parent.getAttribute("contentEditable");
 }
 
+// Improved: Two-click selection for 'copy to' (first click = start, second click = end)
 export function getSelectionRange(
   el: HTMLElement,
   currentRange: [number | null, number | null]
 ): [number | null, number | null] {
-  if (isParentEditable(el)) {
-    const contentArray = Array.from(el!.parentElement!.children);
-    let currentIndex = contentArray.findIndex((item) => item === el);
-    if (currentRange[0] !== null) {
-      contentArray.forEach((el) => el.classList.remove("select-for-move"));
-      const startIndex = currentRange[0];
-      let currentIndex = contentArray.findIndex((item) => item === el);
-      return [startIndex, currentIndex];
-    }
-    return [currentIndex, null];
+  if (!isParentEditable(el)) return currentRange;
+  const contentArray = Array.from(el.parentElement!.children);
+  const clickedIndex = contentArray.findIndex((item) => item === el);
+  // If no start, set start
+  if (currentRange[0] === null) {
+    return [clickedIndex, null];
   }
-  return currentRange;
+  // If start exists and no end, set end
+  if (currentRange[1] === null) {
+    // If user clicks same line, treat as single line selection
+    if (clickedIndex === currentRange[0]) {
+      return [clickedIndex, clickedIndex];
+    }
+    return [currentRange[0], clickedIndex];
+  }
+  // If both start and end exist, reset selection to new start
+  return [clickedIndex, null];
 }
 
 export function updateSelectedElements(
@@ -37,23 +43,17 @@ export function updateSelectedElements(
   container: HTMLElement,
   className: string
 ) {
-  if (currentRange[0] !== null) {
-    let [start, end] = currentRange;
-    const elements = container.children;
-    if (end == undefined) {
-      end = start;
+  const [start, end] = currentRange;
+  const elements = container.children;
+  Array.from(elements).forEach((item) => item.classList.remove(className));
+  if (start !== null && end !== null) {
+    const from = Math.min(start, end);
+    const to = Math.max(start, end);
+    for (let i = from; i <= to; i++) {
+      elements[i].classList.add(className);
     }
-    const content = Array.from(elements);
-    content.forEach((item) => item.classList.remove(className));
-    if (start < end) {
-      for (let i = start; i <= end; i++) {
-        elements[i].classList.add(className);
-      }
-    } else {
-      for (let i = start; i >= end; i--) {
-        elements[i].classList.add(className);
-      }
-    }
+  } else if (start !== null) {
+    elements[start].classList.add(className);
   }
 }
 

@@ -1,5 +1,6 @@
 import endpoints from "../../config/endpoints";
 import { Channel, ContentInfo } from "../../models/channel";
+import { GrabberInfo } from "../../models/grabber";
 import api from "../api";
 
 export const channelsApi = api.injectEndpoints({
@@ -37,7 +38,9 @@ export const channelsApi = api.injectEndpoints({
         url: endpoints.channels.saveContent,
         method: "PATCH",
         body,
+        responseHandler: (response) => response.text(),
       }),
+      transformResponse: () => undefined,
     }),
     getContent: builder.query<string, { channelId: string; type: string }>({
       query: ({ channelId, type }) => ({
@@ -56,6 +59,18 @@ export const channelsApi = api.injectEndpoints({
           .replace(":type", body.sourceType),
         method: "PATCH",
         body,
+        responseHandler: (response) => response.text(),
+      }),
+    }),
+    grabbersInfo: builder.query<GrabberInfo, string>({
+      query: (channelId) => ({
+        url: endpoints.grabbers.getSingle.replace(":id", channelId),
+      }),
+    }),
+    testGrabber: builder.mutation<{ content: string }, { channelId: string }>({
+      query: (body) => ({
+        url: endpoints.grabbers.testGrabber.replace(":id", body.channelId),
+        method: "POST",
       }),
     }),
   }),
@@ -68,4 +83,6 @@ export const {
   useUpdateChannelMutation,
   useGetContentQuery,
   useCopyContentMutation,
+  useGrabbersInfoQuery,
+  useTestGrabberMutation,
 } = channelsApi;

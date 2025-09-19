@@ -40,11 +40,11 @@ function defaultMessageParseTg(text: string): Post {
 }
 
 function videoMessageParseTg(postData: string): Post {
-  let postBuilder = new PostBuilder();
+  const postBuilder = new PostBuilder();
 
-  let dataList = postData.split(" ");
-  let link = dataList.splice(0, 1)[0];
-  let hashResult = separateHashTags(dataList);
+  const dataList = postData.split(" ");
+  const link = dataList.splice(0, 1)[0];
+  const hashResult = separateHashTags(dataList);
 
   postBuilder
     .setVideoLink(link)
@@ -58,18 +58,18 @@ function linkMessageParseTg(
   postData: string,
   loadImageConfig?: LoadImageConfig
 ): Post {
-  let dataList = postData.split(" ");
-  let link = dataList.splice(0, 1)[0];
-  let hashResult = separateHashTags(dataList);
-  let imageResult = separateImage(hashResult.text);
-  let videoResult = separateVideo(hashResult.text);
+  const dataList = postData.split(" ");
+  const link = dataList.splice(0, 1)[0];
+  const hashResult = separateHashTags(dataList);
+  const imageResult = separateImage(hashResult.text);
+  const videoResult = separateVideo(hashResult.text);
   const textSource =
     imageResult.text.length < videoResult.text.length
       ? imageResult
       : videoResult;
-  let text = textSource.text.join(" ");
-  let hasAttachImageLink = text.match(/(\[\s\]\(http)/g);
-  let loadImage =
+  const text = textSource.text.join(" ");
+  const hasAttachImageLink = text.match(/(\[\s\]\(http)/g);
+  const loadImage =
     hasAttachImageLink || imageResult.imageUrl
       ? false
       : checkLoadImage(loadImageConfig);
@@ -92,14 +92,14 @@ function linkMessageParseTg(
       postBuilder.link.length <
       1024
   ) {
-    postBuilder.setImage("http://stub.image.com");
+    postBuilder.setImage("source:" + link);
   }
   return postBuilder.build();
 }
 
 function separateHashTags(messageParts: string[]): TagMessageSplitterResult {
-  let message: string[] = [];
-  let tags: string[] = [];
+  const message: string[] = [];
+  const tags: string[] = [];
   messageParts.forEach(function (word) {
     if (word.indexOf(hashtagSeparator) === 0) {
       tags.push(word.slice(1));
@@ -114,9 +114,9 @@ function separateHashTags(messageParts: string[]): TagMessageSplitterResult {
 }
 
 function separateImage(messageParts: string[]) {
-  let imgRegexp = /(\[img-at\]\((http).*\))/g;
-  let message: string[] = [];
-  let images: string[] = [];
+  const imgRegexp = /(\[img-at\]\((http).*\))/g;
+  const message: string[] = [];
+  const images: string[] = [];
   messageParts.forEach(function (word) {
     if (word.match(imgRegexp)) {
       images.push(word);
@@ -136,9 +136,9 @@ function separateImage(messageParts: string[]) {
 }
 
 function separateVideo(messageParts: string[]) {
-  let imgRegexp = /(\[video-at\]\((http).*\))/g;
-  let message: string[] = [];
-  let videos: string[] = [];
+  const imgRegexp = /(\[video-at\]\((http).*\))/g;
+  const message: string[] = [];
+  const videos: string[] = [];
   messageParts.forEach(function (word) {
     if (word.match(imgRegexp)) {
       videos.push(word);
@@ -158,17 +158,22 @@ function separateVideo(messageParts: string[]) {
 }
 
 function checkLoadImage(param?: LoadImageConfig) {
-  var loadImage;
+  let loadImage;
+  let isExcluded;
   switch (param) {
     case true:
       loadImage = true;
       break;
     case "random":
-      var isExcluded = false;
+      isExcluded = false;
       loadImage = isExcluded ? false : Math.random() >= 0.5;
       break;
     default:
       loadImage = false;
   }
   return loadImage;
+}
+
+export function markupToHtml(text: string) {
+  return text.replace(/\*([^*]+)\*/g, "<b>$1</b>");
 }

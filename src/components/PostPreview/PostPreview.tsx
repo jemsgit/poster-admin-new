@@ -4,7 +4,7 @@ import {
   PostingType,
   LoadImageConfig,
 } from "../../models/channel";
-import { parseChannelContent } from "../../utils/post-parser";
+import { markupToHtml, parseChannelContent } from "../../utils/post-parser";
 import { Post } from "../../utils/postBuilder";
 
 import styles from "./PostPreview.module.css";
@@ -31,7 +31,15 @@ function PostPreview(props: Props) {
     ) {
       setContent(undefined);
     } else {
-      const parsedContent = parseChannelContent(text, type, loadImage);
+      let parsedContent = parseChannelContent(text, type, loadImage);
+      if (parsedContent?.photo?.indexOf("source:") === 0) {
+        parsedContent.photo = parsedContent.photo.replace(
+          "source:",
+          "/api/utils/image?source="
+        );
+      }
+      if (!parsedContent) parsedContent = { text: "" };
+      parsedContent.text = markupToHtml(parsedContent.text || "");
       setContent(parsedContent);
     }
   }, [text, type, contentType, loadImage]);
@@ -51,9 +59,13 @@ function PostPreview(props: Props) {
 
   return (
     <div className={styles.preview}>
-      {content.photo && <div className={styles.media}></div>}
+      {content.photo && (
+        <div className={styles.media}>
+          <img src={content.photo} />
+        </div>
+      )}
       {content.video && <div className={styles.media}>video</div>}
-      {content.text}
+      <span dangerouslySetInnerHTML={{ __html: content.text || "" }} />
     </div>
   );
 }

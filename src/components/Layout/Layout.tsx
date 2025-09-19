@@ -23,7 +23,7 @@ function Layout() {
 
   const matches = useMatches() as UIMatch<RouterLoader, RouterHandle>[];
 
-  const match = matches.filter((m) => m.pathname === location.pathname).pop();
+  const match = matches[matches.length - 1];
   let breadcrumbs;
 
   const handleMenuClick = (menu: { key: string }) => {
@@ -51,6 +51,8 @@ function Layout() {
             items={[
               { label: "Channels", key: "channels" },
               { label: "Dashboard", key: "dashboard" },
+              { label: "Grabbers", key: "grabbers" },
+              { label: "Bots", key: "bots" },
               { label: "Utils", key: "utils" },
             ]}
             style={{ flex: 1, minWidth: 0 }}

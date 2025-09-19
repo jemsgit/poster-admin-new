@@ -8,13 +8,15 @@ import { RootState } from "../../../store/store";
 import styles from "./EditorSidebarBase.module.css";
 import { useAskMutation } from "../../../store/editor/api";
 import { copyTextToClipboard } from "../../../utils/editor";
+import ContentHelper from "../../ContentHelper/ContentHelper";
+import { PostingType } from "../../../models/channel";
 
 interface Props {
   className?: string;
   onActiveContentUpdate: (text: string) => void;
 }
 
-type View = "Post preview" | "AI Helper";
+type View = "Post preview" | "AI Helper" | "Content Helper";
 
 const TRANSLATE_PROMPT = "Translate to russian: ";
 const SUMMARIZE_PROMPT =
@@ -47,7 +49,7 @@ function EditorSidebarBase({ className, onActiveContentUpdate }: Props) {
   const handleAiForSummarize = () => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     if (text) {
-      let match = text.match(urlRegex);
+      const match = text.match(urlRegex);
       if (match && match[0]) {
         const question = SUMMARIZE_PROMPT.replace("{link}", match[0]);
         askForSuggestion({ question });
@@ -64,18 +66,19 @@ function EditorSidebarBase({ className, onActiveContentUpdate }: Props) {
   return (
     <div className={`${className || ""} ${styles.sidebar}`}>
       <Segmented<View>
-        options={["Post preview", "AI Helper"]}
+        options={["Post preview", "AI Helper", "Content Helper"]}
         onChange={setView}
         className={styles.toggle}
       />
-      {view === "Post preview" ? (
+      {view === "Post preview" && (
         <PostPreview
           text={text}
           type={type}
           loadImage={loadImage}
           contentType={contentType}
         />
-      ) : (
+      )}{" "}
+      {view === "AI Helper" && (
         <Form disabled={isLoading} className="">
           <Flex gap={4}>
             <Button
@@ -124,6 +127,13 @@ function EditorSidebarBase({ className, onActiveContentUpdate }: Props) {
             </Button>
           </div>
         </Form>
+      )}
+      {view === "Content Helper" && (
+        <ContentHelper
+          text={text as string}
+          type={type as PostingType}
+          loadImage={loadImage}
+        />
       )}
     </div>
   );

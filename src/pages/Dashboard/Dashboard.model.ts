@@ -18,9 +18,9 @@ const loader = async (): Promise<RouterLoader<DashboardData>> => {
 
   const data = Promise.all([botsQuery, channelsQuery, grabbersQuery]).then(
     (res) => {
-      let bots = res[0].data;
-      let channels = res[1].data;
-      let grabbers = res[2].data;
+      const bots = res[0].data;
+      const channels = res[1].data;
+      const grabbers = res[2].data;
       return {
         bots,
         channels,

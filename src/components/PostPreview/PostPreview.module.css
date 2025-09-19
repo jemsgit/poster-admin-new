@@ -9,6 +9,10 @@
   color: white;
 }
 
+.media img {
+  width: 100%;
+}
+
 .preview {
   white-space: break-spaces;
 }

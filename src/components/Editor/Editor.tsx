@@ -6,6 +6,7 @@ import { CopyOutlined } from "@ant-design/icons";
 import { escapeHtml, renderText } from "../../utils/text";
 import styles from "./Editor.module.css";
 import {
+  copyTextToClipboard,
   getSelectionRange,
   isParentEditable,
   processContentItemClick,
@@ -38,6 +39,13 @@ type ActionFunc = (
   inputRef: React.RefObject<HTMLElement>,
   activeElement: HTMLElement
 ) => void;
+
+interface Actions {
+  up: () => void;
+  down: () => void;
+  delete: () => void;
+  top: () => void;
+}
 
 const topAction: ActionFunc = (inputRef, activeElement) => {
   inputRef?.current?.removeChild(activeElement);
@@ -77,13 +85,6 @@ const handleOpenLink = (e: MouseEvent) => {
   processContentItemClick(e);
 };
 
-interface Actions {
-  up: () => void;
-  down: () => void;
-  delete: () => void;
-  top: () => void;
-}
-
 const actions = {
   up: upAction,
   down: downAction,
@@ -91,7 +92,7 @@ const actions = {
   top: topAction,
 };
 
-type Action = "copy";
+type Action = "copyTo" | "copy";
 
 const handleEditorFocus = () => {
   document.body.classList.add(FIXED_BODY_CLASS);
@@ -172,7 +173,7 @@ const Editor = ({
 
   const handleMouseClick = (e: MouseEvent) => {
     const el = e.target as HTMLTextAreaElement;
-    if (currentAction === "copy") {
+    if (currentAction === "copyTo") {
       const newRangeToCopy = getSelectionRange(el, elementsRange);
       setElementsRange(newRangeToCopy);
       setTimeout(() => {
@@ -218,8 +219,8 @@ const Editor = ({
 
     if (e.key === "Enter" && activeRef.current) {
       e.preventDefault(); // Prevent the default behavior
-      const newLine = document.createElement("div"); // Or 'p'
-      newLine.innerHTML = ""; // Ensures the new line is visible
+      const newLine = document.createElement("div");
+      newLine.innerHTML = "";
       const selection = window.getSelection();
       if (selection) {
         //const range = selection.getRangeAt(0);
@@ -231,8 +232,6 @@ const Editor = ({
         selection.removeAllRanges();
         selection.addRange(newRange);
       }
-
-      // Move the cursor to the new line
     }
 
     const prevElement = activeRef.current.previousElementSibling as HTMLElement;
@@ -304,8 +303,11 @@ const Editor = ({
   }, []);
 
   const handleActionChange = (action: Action | null) => {
-    if (action) {
+    if (action === "copyTo") {
       activeRef.current?.classList.remove(ACTIVE_CLASS);
+    } else if (action === "copy") {
+      copyTextToClipboard(activeRef.current?.innerText || "");
+      return;
     }
     if (!action) {
       const content = Array.from(inputRef.current?.children || []);
@@ -315,7 +317,7 @@ const Editor = ({
   };
 
   const renderAdditional = () => {
-    if (currentAction === "copy") {
+    if (currentAction === "copyTo") {
       return (
         <Flex>
           <Dropdown
@@ -335,7 +337,7 @@ const Editor = ({
             htmlType="button"
             size="small"
             className={styles.controlButton}
-            onClick={() => handleActionChange("copy")}
+            onClick={() => handleActionChange("copyTo")}
           >
             Copy To
           </Button>

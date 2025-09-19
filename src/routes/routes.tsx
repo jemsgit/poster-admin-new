@@ -6,9 +6,12 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Layout from "../components/Layout/Layout";
 import dashboardLoader from "../pages/Dashboard/Dashboard.model";
 import channelLoader from "../pages/Channel/Channel.model";
+import channelsLoader from "../pages/Channels/Channels.model";
 import Channel from "../pages/Channel/Channel";
 import ContentEditor from "../pages/ContentEditor/ContentEditor";
 import contentEditLoader from "../pages/ContentEditor/ContentEditor.model";
+import GrabberPage from "../pages/Grabber/Grabber";
+import grabberLoader from "../pages/Grabber/Grabber.model";
 
 const basename = import.meta.env.BASE_URL || "/";
 
@@ -33,6 +36,8 @@ const getRoutes = () => {
                   {
                     index: true,
                     element: <Channels />,
+                    loader: channelsLoader.loader,
+                    handle: channelsLoader.handle,
                   },
                   {
                     path: ":name",
@@ -49,7 +54,7 @@ const getRoutes = () => {
                 ],
               },
               {
-                path: "bots", // Accessible at "/bots"
+                path: "/bots", // Accessible at "/bots"
                 children: [
                   {
                     index: true,
@@ -62,17 +67,17 @@ const getRoutes = () => {
                 ],
               },
               {
-                path: "grabbers", // Accessible at "/channels"
-                loader: dashboardLoader.loader,
-                handle: dashboardLoader.handle,
+                path: "/grabbers", // Accessible at "/channels"
                 children: [
                   {
                     index: true,
-                    element: <Channels />,
+                    element: <GrabberPage />,
                   },
                   {
-                    path: ":name",
-                    element: <Channel />,
+                    path: ":channelId",
+                    loader: grabberLoader.loader,
+                    handle: grabberLoader.handle,
+                    element: <GrabberPage />,
                   },
                 ],
               },

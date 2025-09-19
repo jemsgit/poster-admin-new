@@ -68,7 +68,7 @@ export default function mocks(): MockMethod[] {
         return {
           channelId: "@front_end_dev",
           content:
-            "https://trst.rewr.derw esfrasdnfk lkasjdflk alsdfk a;lsdfk\r\nhttps://vcvfvf.sdfsdf.fsdfsd esfrasdnfk lkasjdflk alsdfk a;lsdfk",
+            "https://trst.rewr.derw *esfrasdnfk lkasjdflk alsdfk* a;lsdfk\r\nhttps://vcvfvf.sdfsdf.fsdfsd esfrasdnfk lkasjdflk alsdfk a;lsdfk [img-at](https://welcome.com) ##hastag",
           type: "main",
         };
       },

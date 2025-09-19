@@ -17,10 +17,23 @@ const endpoints = {
   },
   grabbers: {
     get: "/api/grabbers",
-    getSingle: "/api/grabbers/:id",
+    getSingle: "/api/channels/grabber/:id",
+    testGrabber: "/api/channels/test-grab/:id",
   },
   suggestions: {
     ask: "/api/suggestions/ask",
+  },
+  utils: {
+    images: {
+      get: "/api/utils/images",
+      upload: "/api/utils/image",
+      delete: "/api/utils/images/:id",
+    },
+    prompts: {
+      get: "/api/utils/prompts",
+      add: "/api/utils/prompts",
+      delete: "/api/utils/prompts/:id",
+    },
   },
 };
 

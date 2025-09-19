@@ -4,7 +4,7 @@ import { viteMockServe } from "vite-plugin-mock";
 
 export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
-  console.log(process.env.USE_MOCKS);
+
   return {
     plugins: [
       react(),
@@ -17,9 +17,11 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target: "http://127.0.0.1:3005",
+          //target: "http://127.0.0.1:3005",
+          target: "https://jem-space.ru/adminka",
           changeOrigin: true,
           secure: false,
+          rewrite: (path) => path.replace(/^\/api/, "/api"),
         },
       },
     },

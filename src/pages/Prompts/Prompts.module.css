@@ -1,0 +1,7 @@
+.contentEditPlate {
+  width: 300px;
+  white-space: break-spaces;
+  word-wrap: break-word;
+  cursor: pointer;
+  background-color: #1677ff54;
+}
